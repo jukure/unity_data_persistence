@@ -13,22 +13,22 @@ public class StartMenuManager : MonoBehaviour
     public static StartMenuManager Instance;
     public string playerName;
     private string dataPath;
-    private BestNameScore currBestNameScore;
+    public BestNameScore currBestNameScore;
 
-    private void Start()
+    private void Awake()
     {
         dataPath= Application.persistentDataPath + "/best.json";
 
-        if(Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            Load();
-        }
-        else
+        if(Instance != null && Instance != this)
         {
             Destroy(gameObject);
         }
+        else
+        {
+            Instance = this;
+        }
+        DontDestroyOnLoad(gameObject);
+        Load();
     }
     public void LoadMain(TMP_InputField nameField)
     {
@@ -37,7 +37,7 @@ public class StartMenuManager : MonoBehaviour
     }
 
     [System.Serializable]
-    class BestNameScore
+    public class BestNameScore
     {
         public string name;
         public int score;
@@ -45,11 +45,11 @@ public class StartMenuManager : MonoBehaviour
 
     public string GetBestName()
     {
-        return StartMenuManager.Instance.currBestNameScore.name;
+        return (currBestNameScore.name != null) ? currBestNameScore.name : "";
     }
     public int GetBestScore()
     {
-        return StartMenuManager.Instance.currBestNameScore.score;
+        return currBestNameScore.score;
     }
 
     public void ReplaceBestIfBetter(string name, int score)
